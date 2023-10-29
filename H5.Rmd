@@ -1,0 +1,69 @@
+---
+title: "H5"
+output: html_document
+date: "2023-10-21"
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+#Reading from Excel
+library(readxl)
+bike <- read_excel("/Users/wangd07/Desktop/data.xlsx")
+str(bike)
+library(data.table)
+setDT(bike)
+class (bike)
+library(fpp)
+library(fpp2)
+#Import Time Series
+
+bike = ts(bike$duration, start= c(2018,01) , end = c(2022,12),frequency = 24)
+bike
+#Plot Time Series
+
+plot(bike)
+
+#Do Time Series Forecasting
+stl_decomp <- stl(bike,s.window ="periodic")
+plot(stl_decomp)
+
+tmp <- seasadj(stl_decomp)
+lines(tmp, col = "red")
+attributes(stl_decomp)
+# Default period forecast
+f_stl <- forecast(stl_decomp)
+# you can pass the # of period
+f_stl <- forecast(stl_decomp,h=6)
+f_stl
+plot(f_stl)
+#change the periods 
+stl_f <-forecast(seasadj(stl_decomp),h=8)
+accuracy(stl_f)
+attributes(stl_f)
+plot(stl_f)
+#change the periods
+stlf <-forecast(seasadj(stl_decomp),h=12)
+accuracy(stlf)
+attributes(stlf)
+plot(stlf)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
